@@ -1,17 +1,34 @@
-import React from 'react';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-class App extends React.Component {
+const App = () => {
+  const [data, setData] = useState([]);
 
-render(){
-  return(
-    <div className="app container">
-      <div className="jumbotron "> {/*Jumbotron componente de Boostrap que representa un cuadro destacado en una pagina en HTML*/}
-        <p className="lead text-center">Buscador de Certificados</p>
-      </div>  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios');
+        setData(response.data.items);
+        console.log(response.data.items)
+      } catch (error) {
+        console.error('Error al obtener los datos:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <div>
+      <h1>API de Oracle APEX</h1>
+      <ul>
+        {data.map(item => (
+          
+          <li key={item.id}>{item.type_description}</li>
+        ))}
+      </ul>
     </div>
-    );
-  }
-}
+  );
+};
 
 export default App;
