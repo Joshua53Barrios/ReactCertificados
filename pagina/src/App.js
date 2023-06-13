@@ -14,14 +14,14 @@ class App extends React.Component {
   state = {
     data: [] ,
     modalInsertar: false,
+    tipoModal: "",
     form:{
       acl_description: "",
       base_domain: "",
       description: "",
       type_description: "",
       wallet_password: "",
-      walleth_path: "",
-      tipoModal: ""
+      walleth_path: ""
     }
   }
 
@@ -58,14 +58,14 @@ class App extends React.Component {
 
   domainSelect = (domain) =>{
     this.setState({
+      tipoModal: "update",
       form: {
         acl_description: domain.acl_description,
         base_domain: domain.base_domain,
         description: domain.description,
         type_description: domain.type_description,
         wallet_password: domain.wallet_password,
-        walleth_path: domain.walleth_path,
-        tipoModal: "update"
+        walleth_path: domain.walleth_path
       }
     })
   }
@@ -159,12 +159,12 @@ render(){
 
           <ModalFooter>
             {this.state.tipoModal == "update"?
+            <button className='btn btn-primary' onClick={()=>this.putPetition()}>
+            update
+          </button> :
             <button className='btn btn-success' onClick={()=>this.postPetition()}>
               Insert
-            </button> : 
-            <button className='btn btn-primary' onClick={()=>this.putPetition()}>
-              update
-            </button>
+            </button> 
             }
             <button className='btn btn-danger' onClick={()=>this.modalInsertar()}>cancelar</button>
           </ModalFooter>
