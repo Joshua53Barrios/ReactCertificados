@@ -10,27 +10,6 @@ import { BiTrash } from "react-icons/bi"
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 
 
-const postData = async () => {
-  const url = 'https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios'; // Reemplaza esto con la URL adecuada
-  const data = {
-    acl_description: "Descripción",
-    base_domain: "Dominio",
-    description: "Descripción",
-    type_description: "Descripción",
-    wallet_password: "Contraseña",
-    walleth_path: "Ruta"
-  };
-
-  try {
-    const response = await axios.post(url, data);
-    console.log(response.data);
-    // Realiza las acciones necesarias con la respuesta del servidor
-  } catch (error) {
-    console.error(error);
-    // Maneja el error de acuerdo a tus necesidades
-  }
-};
-
 
 class App extends React.Component {
 
@@ -50,6 +29,42 @@ class App extends React.Component {
 
   // Llama a la función para hacer la solicitud POST
   
+  peticionPost = async() => {
+    await fetch(url, {method: 'POST', headers: {
+      'Content-Type': 'application/json'
+    },
+  
+    body: JSON.stringify({
+      "TYPE_DESCRIPTION" : this.state.form.type_description,
+      "ACL_DESCRIPTION" : this.state.form.acl_description,
+      "BASE_DOMAIN" : this.state.form.base_domain,
+      "WALLETH_PATH" : this.state.form.walleth_path,
+      "DESCRIPTION" : this.state.form.description,
+      "WALLET_PASSWORD" : this.state.form.wallet_password
+    })}).then(response =>{
+      this.modalInsertar();
+      this.getPetition();
+    })
+  }
+
+
+  peticionPut = async() => {
+    await fetch(url, {method: 'PUT', headers: {
+      'Content-Type': 'application/json'
+    },
+  
+    body: JSON.stringify({
+      "TYPE_DESCRIPTION" : this.state.form.type_description,
+      "ACL_DESCRIPTION" : this.state.form.acl_description,
+      "BASE_DOMAIN" : this.state.form.base_domain,
+      "WALLETH_PATH" : this.state.form.walleth_path,
+      "DESCRIPTION" : this.state.form.description,
+      "WALLET_PASSWORD" : this.state.form.wallet_password
+    })}).then(response =>{
+      this.modalInsertar();
+      this.getPetition();
+    })
+  }
 
   getPetition = () => {
     axios.get(url).then(response => {
@@ -60,8 +75,8 @@ class App extends React.Component {
     })
   }
 
-  postPetition = async() => {
-    await axios.post(url,this.state.form,  {
+  /*postPetition = async() => {
+    await axios.post(url, {data: this.state.form},  {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -79,7 +94,7 @@ class App extends React.Component {
       this.modalInsertar();
       this.getPetition();
     })
-  }
+  }*/
 
   modalInsertar=()=>{
     this.setState({modalInsertar: !this.state.modalInsertar});
@@ -188,10 +203,10 @@ render(){
 
           <ModalFooter>
             {this.state.tipoModal == "update"?
-            <button className='btn btn-primary' onClick={()=>this.putPetition()}>
+            <button className='btn btn-primary' onClick={()=>this.peticionPut()}>
             update
           </button> :
-            <button className='btn btn-success' onClick={()=>postData()}>
+            <button className='btn btn-success' onClick={()=>this.peticionPost()}>
               Insert
             </button> 
             }
