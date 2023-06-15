@@ -9,6 +9,29 @@ import { BiTrash } from "react-icons/bi"
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 
+
+const postData = async () => {
+  const url = 'https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios'; // Reemplaza esto con la URL adecuada
+  const data = {
+    acl_description: "Descripción",
+    base_domain: "Dominio",
+    description: "Descripción",
+    type_description: "Descripción",
+    wallet_password: "Contraseña",
+    walleth_path: "Ruta"
+  };
+
+  try {
+    const response = await axios.post(url, data);
+    console.log(response.data);
+    // Realiza las acciones necesarias con la respuesta del servidor
+  } catch (error) {
+    console.error(error);
+    // Maneja el error de acuerdo a tus necesidades
+  }
+};
+
+
 class App extends React.Component {
 
   state = {
@@ -25,9 +48,12 @@ class App extends React.Component {
     }
   }
 
+  // Llama a la función para hacer la solicitud POST
+  
+
   getPetition = () => {
     axios.get(url).then(response => {
-      console.log('API OBTENIDA');
+      console.log('API GET OBTENIDA');
       this.setState({ data:response.data.items });
     }).catch(error =>{
       console.log(error);
@@ -35,18 +61,21 @@ class App extends React.Component {
   }
 
   postPetition = async() => {
-    await axios.post(url,this.state.form).then(response => {
+    await axios.post(url,this.state.form,  {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    } ).then(response => {
       this.modalInsertar();
       this.getPetition();
       console.log(this.state.form)
     }).catch(error=>{
       console.log(error.message);
     })
-    console.log(this.state.form);
   }
 
   putPetition = () =>{
-    axios.put(url+this.state.form.acl_description, this.state.form).then(response=>{
+    axios.put(url, this.state.form).then(response=>{
       this.modalInsertar();
       this.getPetition();
     })
@@ -162,7 +191,7 @@ render(){
             <button className='btn btn-primary' onClick={()=>this.putPetition()}>
             update
           </button> :
-            <button className='btn btn-success' onClick={()=>this.postPetition()}>
+            <button className='btn btn-success' onClick={()=>postData()}>
               Insert
             </button> 
             }
