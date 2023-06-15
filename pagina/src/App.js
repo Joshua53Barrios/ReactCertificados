@@ -52,7 +52,6 @@ class App extends React.Component {
     await fetch(url, {method: 'PUT', headers: {
       'Content-Type': 'application/json'
     },
-  
     body: JSON.stringify({
       "TYPE_DESCRIPTION" : this.state.form.type_description,
       "ACL_DESCRIPTION" : this.state.form.acl_description,
@@ -87,14 +86,14 @@ class App extends React.Component {
     }).catch(error=>{
       console.log(error.message);
     })
-  }
+  } 
 
   putPetition = () =>{
     axios.put(url, this.state.form).then(response=>{
       this.modalInsertar();
       this.getPetition();
     })
-  }*/
+  } */
 
   modalInsertar=()=>{
     this.setState({modalInsertar: !this.state.modalInsertar});
