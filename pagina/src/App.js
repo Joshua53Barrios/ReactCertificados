@@ -7,6 +7,7 @@ import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
 import swal from 'sweetalert'
 import Cabecera from './Componentes/Cabecera';
+import { NavBar } from './Componentes/navBar';
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 const urlSD = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/DominiosSD";
@@ -200,7 +201,7 @@ render(){
   
   return(
     <div className='App'>
-      <Cabecera/>
+      <NavBar />
     <br />
       <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>Agregar Dominios</button>
       <br /> <br />
