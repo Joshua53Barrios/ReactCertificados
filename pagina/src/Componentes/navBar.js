@@ -1,5 +1,6 @@
 import react, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
+import './navBar.css';
 import {
     Collapse,
     Navbar,
@@ -18,18 +19,19 @@ import {
 
     return (
       <div>
-        <Navbar color="faded" light className="navbar navbar-ligth" style={{backgroundColor: '#e3f2fd'}}>
-          <NavbarBrand href="/" className="me-auto" style={{color: '#D9E9F3'}}>
+        <Navbar color="faded" light className="navbar navbar-ligth" style={{backgroundColor: '#22266B'}}>
+          <NavbarBrand href="/" className="me-auto" style={{color: '#FFFFFF'}}>
             Menu
           </NavbarBrand>
-          <NavbarToggler onClick={toggleNavbar} className="me-2" />
+          <NavbarToggler onClick={toggleNavbar} className="me-2" style={{backgroundColor: '#FFFFFF'}}/>
           <Collapse isOpen={!collapsed} navbar>
-            <Nav navbar>
-              <NavItem>
-                <NavLink href="">Wallets</NavLink>
+            <Nav navbar >
+              <NavItem >
+                <NavLink className='links' href="">Wallets</NavLink>
               </NavItem>
+              <hr style={{color: 'white'}}/>
               <NavItem>
-                <NavLink href="">
+                <NavLink className='links' href="">
                   Certificates
                 </NavLink>
               </NavItem>

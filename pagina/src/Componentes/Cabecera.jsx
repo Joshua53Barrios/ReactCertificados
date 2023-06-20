@@ -9,7 +9,7 @@ const Cabecera = () => {
     return(
         <header className="Cabecera"> {/*header.Cabecera*/}
             <h1 className="Cabecera-h1"> {/*h1.Cabecera-h1*/}
-                <a href="" className="Cabera-a">Certificados</a> {/*a.Cabecera-a*/}
+                <p href="" className="Cabera-a">Certificados</p> {/*a.Cabecera-a*/}
             </h1>
             <button  onClick={toggleMenu} className="Cabecera-button"> {/*button.Cabecera-button*/}
                 <svg className='Cabecera-svg' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
