@@ -1,0 +1,39 @@
+.Cabecera {
+    background-color: aqua ;
+    width: 100%;
+    padding: 1em; /*padding: 1em establece un relleno para el elemento que es igual al tamaño de la fuente del elemento.*/
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+.Cabecera-h1 {
+    background-color: orange;
+}
+.Cabecera-a {
+
+}
+.Cabecera-button {
+    background-color: rebeccapurple;
+}
+.Cabecera-svg {
+    width: 2em;
+    height: 2em;
+}
+.Cabecera-nav {
+    background-color: bisque;
+}
+.Cabecera-ul {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+.Cabecera {
+    margin: 0 .5em;
+}
+@media screen and (max-width:480px) {
+    .Cabecera-button{
+        display: flex;
+    }
+}

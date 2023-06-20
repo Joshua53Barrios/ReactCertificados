@@ -2,12 +2,17 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css"
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reactstrap';
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
+import Cabecera from './Componentes/Cabecera';
+import swal from 'sweetalert'
 
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
+const urlSD = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/DominiosSD";
+
+
 
 class App extends React.Component {
 
@@ -16,50 +21,109 @@ class App extends React.Component {
     modalInsertar: false,
     tipoModal: "",
     form:{
+      id_pk : "",
       acl_description: "",
       base_domain: "",
       description: "",
       type_description: "",
       wallet_password: "",
-      walleth_path: ""
+      walleth_path: "",
+      published: ""
     }
+  }
+
+  // Llama a la función para hacer la solicitud POST
+  
+  peticionPost = async() => {
+    await fetch(url, {method: 'POST', headers: {
+      'Content-Type': 'application/json'
+    },
+  
+    body: JSON.stringify({
+      "TYPE_DESCRIPTION" : this.state.form.type_description,
+      "ACL_DESCRIPTION" : this.state.form.acl_description,
+      "BASE_DOMAIN" : this.state.form.base_domain,
+      "WALLETH_PATH" : this.state.form.walleth_path,
+      "DESCRIPTION" : this.state.form.description,
+      "WALLET_PASSWORD" : this.state.form.wallet_password
+    })}).then(response =>{
+      this.modalInsertar();
+      this.getPetition();
+    })
+  }
+
+
+  peticionPut = async() => {
+    await fetch(url, {method: 'PUT', headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "ID_PK" : this.state.form.id_pk,
+      "TYPE_DESCRIPTION" : this.state.form.type_description,
+      "ACL_DESCRIPTION" : this.state.form.acl_description,
+      "BASE_DOMAIN" : this.state.form.base_domain,
+      "WALLETH_PATH" : this.state.form.walleth_path,
+      "DESCRIPTION" : this.state.form.description,
+      "WALLET_PASSWORD" : this.state.form.wallet_password
+    })}).then(response =>{
+      this.modalInsertar();
+      this.getPetition();
+    })
+  }
+
+  peticionPutSd = async() => {
+    await fetch(urlSD, {method: 'PUT',
+  headers:{
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "ID_PK" : this.state.form.id_pk
+  })}).then(response =>{
+    this.modalInsertar();
+    this.getPetition();
+  })
   }
 
   getPetition = () => {
     axios.get(url).then(response => {
-      console.log('API OBTENIDA');
+      console.log('API GET OBTENIDA');
+      console.log(response)
       this.setState({ data:response.data.items });
     }).catch(error =>{
       console.log(error);
     })
   }
 
-  postPetition = async() => {
-    await axios.post(url,this.state.form).then(response => {
+  /*postPetition = async() => {
+    await axios.post(url, {data: this.state.form},  {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    } ).then(response => {
       this.modalInsertar();
       this.getPetition();
       console.log(this.state.form)
     }).catch(error=>{
       console.log(error.message);
     })
-    console.log(this.state.form);
-  }
+  } 
 
   putPetition = () =>{
     axios.put(url, this.state.form).then(response=>{
       this.modalInsertar();
       this.getPetition();
     })
-  }
+  } */
 
   modalInsertar=()=>{
     this.setState({modalInsertar: !this.state.modalInsertar});
   }
 
-  domainSelect = (domain) =>{
+  domainSelect = (domain, tipoModal) =>{
     this.setState({
-      tipoModal: "update",
+      tipoModal: tipoModal,
       form: {
+        id_pk : domain.id_pk,
         acl_description: domain.acl_description,
         base_domain: domain.base_domain,
         description: domain.description,
@@ -69,6 +133,7 @@ class App extends React.Component {
       }
     })
   }
+
 
   handleChange = async e =>{
     e.persist();
@@ -93,12 +158,14 @@ render(){
   
   return(
     <div className='App'>
+      <Cabecera/>
     <br />
       <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>Agregar Dominios</button>
       <br /> <br />
       <table className='table'>
       <thead>
         <tr>
+          <th>id_pk</th>
           <th>acl_description</th>
           <th>base_domain</th>
           <th>description</th>
@@ -112,6 +179,7 @@ render(){
       {
       this.state.data.map(domain => (
     <tr key={domain.description}>
+      <td>{domain.id_pk}</td>
       <td>{domain.acl_description}</td>
       <td>{domain.base_domain}</td>
       <td>{domain.description}</td>
@@ -120,9 +188,9 @@ render(){
       <td>{domain.wallet_password}</td>
       <td>{domain.walleth_path}</td>
       <td>
-          <button className='btn btn-primary' onClick={()=>{this.domainSelect(domain); this.modalInsertar()}}><BiPencil /></button>
+          <button className='btn btn-primary' onClick={()=>{this.domainSelect(domain, "update"); this.modalInsertar()}}><BiPencil /></button>
           {"  "}
-          <button className='btn btn-danger'><BiTrash /></button>
+          <button className='btn btn-danger' onClick={()=>{this.domainSelect(domain, "delete"); this.modalInsertar()}}><BiTrash /></button>
       </td>
     </tr>
   ))
@@ -147,7 +215,13 @@ render(){
               <input className='form-control' type='text' name="description" id="description" onChange={this.handleChange} value={form?form.description:""}/>
               <br />
               <label htmlFor="type_description">type_description</label>
-              <input className='form-control' type='text' name="type_description" id="type_description" onChange={this.handleChange} value={form?form.type_description:""} />
+              <FormGroup>
+              <Input className='form-select form-select-sm' type='select' name="type_description" id="type_description" onChange={this.handleChange} value={form?form.type_description:""}>
+              <option selected>Select a option</option>
+              <option value={'REST'}>REST</option>
+              <option value={'SOAP'}>SOAP</option>
+              </Input>
+              </FormGroup>
               <br />
               <label htmlFor="wallet_password">wallet_password</label>
               <input className='form-control' type='text' name="wallet_password" id="wallet_password" onChange={this.handleChange} value={form?form.wallet_password:""} />
@@ -158,11 +232,14 @@ render(){
           </ModalBody>
 
           <ModalFooter>
-            {this.state.tipoModal == "update"?
-            <button className='btn btn-primary' onClick={()=>this.putPetition()}>
+            {this.state.tipoModal === "update"?
+            <button className='btn btn-primary' onClick={()=>this.peticionPut()}>
             update
-          </button> :
-            <button className='btn btn-success' onClick={()=>this.postPetition()}>
+          </button> : this.state.tipoModal === "delete" ?
+          <button className='btn btn-warning' onClick={()=>this.peticionPutSd()}>
+          delete
+        </button> :
+            <button className='btn btn-success' onClick={()=>this.peticionPost()}>
               Insert
             </button> 
             }
