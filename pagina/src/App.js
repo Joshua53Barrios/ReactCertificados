@@ -5,9 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reactstrap';
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
-import Cabecera from './Componentes/Cabecera';
 import swal from 'sweetalert'
-
+import Cabecera from './Componentes/Cabecera';
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 const urlSD = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/DominiosSD";
@@ -70,6 +69,49 @@ class App extends React.Component {
       this.getPetition();
     })
   }
+
+  deleteConfirm = () =>{
+    swal({
+      title: "Delete",
+      text: "Are you sure to delete this certificate?",
+      icon: "warning",
+      buttons: ["No","Yes"] 
+    }).then(respuesta => {
+      if(respuesta){
+        this.peticionPutSd();
+        swal({text: "The certificate has been deleted", icon: "success", timer:"2000"});        
+      }
+    })
+  }
+
+  updateConfirm = () =>{
+    swal({
+      title: "Update",
+      text: "Are you sure to edit this certificate?",
+      icon: "warning",
+      buttons: ["No","Yes"] 
+    }).then(respuesta => {
+      if(respuesta){
+        this.peticionPut();
+        swal({text: "The certificate has been edited", icon: "success", timer:"2000"});        
+      }
+    })
+  }
+
+  insertConfirm = () =>{
+    swal({
+      title: "Insert",
+      text: "Are you sure to insert this certificate?",
+      icon: "warning",
+      buttons: ["No","Yes"] 
+    }).then(respuesta => {
+      if(respuesta){
+        this.peticionPost();
+        swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});        
+      }
+    })
+  }
+
 
   peticionPutSd = async() => {
     await fetch(urlSD, {method: 'PUT',
@@ -165,7 +207,7 @@ render(){
       <table className='table'>
       <thead>
         <tr>
-          <th>id_pk</th>
+          <th style={{display:'none'}}>id_pk</th>
           <th>acl_description</th>
           <th>base_domain</th>
           <th>description</th>
@@ -179,7 +221,7 @@ render(){
       {
       this.state.data.map(domain => (
     <tr key={domain.description}>
-      <td>{domain.id_pk}</td>
+      <td style={{display: 'none'}}>{domain.id_pk}</td>
       <td>{domain.acl_description}</td>
       <td>{domain.base_domain}</td>
       <td>{domain.description}</td>
@@ -205,6 +247,29 @@ render(){
           </ModalHeader>
           <ModalBody>
             <div className='form-group'>
+              {this.state.tipoModal === "delete"?
+              <div>
+              <label htmlFor="acl_description">ACL Description</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="acl_description" id="acl_description" onChange={this.handleChange} value={form?form.acl_description: ""}/>
+              <br />
+              <label htmlFor="base_domain">Domain</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="base_domain" id="base_domain" onChange={this.handleChange} value={form?form.base_domain: ""}/>
+              <br />
+              <label htmlFor="description">description</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="description" id="description" onChange={this.handleChange} value={form?form.description:""}/>
+              <br />
+              <label htmlFor="type_description">type_description</label>
+              <FormGroup>
+              <Input disabled className='form-select form-select-sm'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='select' name="type_description" id="type_description" onChange={this.handleChange} value={form?form.type_description:""}>
+              <option selected>Select a option</option>
+              <option value={'REST'}>REST</option>
+              <option value={'SOAP'}>SOAP</option>
+              </Input>
+              </FormGroup>
+              <br /> 
+              </div>
+              :
+              <div>
               <label htmlFor="acl_description">ACL Description</label>
               <input className='form-control' type='text' name="acl_description" id="acl_description" onChange={this.handleChange} value={form?form.acl_description: ""}/>
               <br />
@@ -222,24 +287,37 @@ render(){
               <option value={'SOAP'}>SOAP</option>
               </Input>
               </FormGroup>
+              <br /> 
+              </div>
+              } 
+              {this.state.tipoModal === "update" || this.state.tipoModal === "delete"? 
+              <div>
+              <label htmlFor="wallet_password" >wallet_password</label>
+              <input className='form-control' readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="wallet_password" id="wallet_password" onChange={this.handleChange} value={form?form.wallet_password:""} />
               <br />
+              <label htmlFor="walleth_path" >walleth_path</label>
+              <input className='form-control' readOnly  style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="walleth_path" id="walleth_path" onChange={this.handleChange} value={form?form.walleth_path:""} />
+              </div>
+               : 
+               <div>
               <label htmlFor="wallet_password">wallet_password</label>
               <input className='form-control' type='text' name="wallet_password" id="wallet_password" onChange={this.handleChange} value={form?form.wallet_password:""} />
               <br />
               <label htmlFor="walleth_path">walleth_path</label>
               <input className='form-control' type='text' name="walleth_path" id="walleth_path" onChange={this.handleChange} value={form?form.walleth_path:""} />
+              </div>
+              }
             </div>
           </ModalBody>
-
           <ModalFooter>
             {this.state.tipoModal === "update"?
-            <button className='btn btn-primary' onClick={()=>this.peticionPut()}>
+            <button className='btn btn-primary' onClick={()=>this.updateConfirm()}>
             update
           </button> : this.state.tipoModal === "delete" ?
-          <button className='btn btn-warning' onClick={()=>this.peticionPutSd()}>
+          <button className='btn btn-warning' onClick={()=>this.deleteConfirm()}>
           delete
         </button> :
-            <button className='btn btn-success' onClick={()=>this.peticionPost()}>
+            <button className='btn btn-success' onClick={()=>this.insertConfirm()}>
               Insert
             </button> 
             }
