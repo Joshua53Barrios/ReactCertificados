@@ -1,0 +1,13 @@
+.links{
+    color: white;
+    justify-content: center;
+    align-items: center;
+}
+
+.links:hover{
+    color: #588DB8;
+}
+.me-auto{
+    justify-content: center;
+    align-items: center;
+}

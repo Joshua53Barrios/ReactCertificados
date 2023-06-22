@@ -8,10 +8,9 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink,
   } from 'reactstrap'; 
-
-  function NavBar() {
+  import { NavLink } from 'react-router-dom';
+  function Navbarmenu() {
 
     const [collapsed, setCollapsed] = useState(true);
 
@@ -27,13 +26,11 @@ import {
           <Collapse isOpen={!collapsed} navbar>
             <Nav navbar >
               <NavItem >
-                <NavLink className='links' href="">Wallets</NavLink>
+                    <NavLink className='links' exact to="/" activeClassName="active">Wallets</NavLink>
               </NavItem>
               <hr style={{color: 'white'}}/>
               <NavItem>
-                <NavLink className='links' href="">
-                  Certificates
-                </NavLink>
+                    <NavLink className='links' to="/certificates" activeClassName="active">Certificates</NavLink>
               </NavItem>
             </Nav>
           </Collapse>
@@ -42,4 +39,4 @@ import {
     );
   }
 
-  export { NavBar };
+  export {Navbarmenu};
