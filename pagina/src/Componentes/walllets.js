@@ -5,7 +5,7 @@ import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reac
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
 import swal from 'sweetalert'
-
+import './wallets.css'
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 const urlSD = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/DominiosSD";
 
