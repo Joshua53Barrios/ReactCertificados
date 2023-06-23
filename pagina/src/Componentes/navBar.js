@@ -19,18 +19,18 @@ import {
     return (
       <div>
         <Navbar color="faded" light className="navbar navbar-ligth" style={{backgroundColor: '#e3f2fd'}}>
-          <NavbarBrand href="/" className="me-auto" style={{color: '#06385C'}}>
+          <NavbarBrand href="" className="me-auto" style={{color: '#06385C'}}>
             Menu
           </NavbarBrand>
           <NavbarToggler onClick={toggleNavbar} className="me-2" />
           <Collapse isOpen={!collapsed} navbar>
             <Nav navbar>
               <NavItem>
-                <NavLink href="" style={{color: '#06385C'}}>Wallets</NavLink>
+                <NavLink href="/src/App.js" style={{color: '#06385C'}}>Wallets</NavLink>
               </NavItem>
               <hr />
               <NavItem>
-                <NavLink href="" style={{color: '#06385C'}}>
+                <NavLink href="/src/Componentes/buscador.js" style={{color: '#06385C'}}>
                   Certificates
                 </NavLink>
               </NavItem>

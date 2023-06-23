@@ -243,8 +243,8 @@ render(){
       </table>
 
       <Modal isOpen={this.state.modalInsertar}>
-          <ModalHeader style={{display: 'block'}}>
-            <span style={{float: 'right'}} onClick={()=>this.modalInsertar}>x</span>
+          <ModalHeader style={{display: 'block'}}> 
+            <button className="btn btn-light" style={{float: 'right'}} onClick={()=>this.modalInsertar()}>x</button>
           </ModalHeader>
           <ModalBody>
             <div className='form-group'>
@@ -331,4 +331,4 @@ render(){
   }
 }
 
-export default App;
+export { App };
