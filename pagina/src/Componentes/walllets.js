@@ -217,7 +217,7 @@ render(){
       <tbody>
       {
       this.state.data.map(domain => (
-    <tr key={domain.description}>
+    <tr key={domain.id_pk}>
       <td style={{display: 'none'}}>{domain.id_pk}</td>
       <td>{domain.acl_description}</td>
       <td>{domain.base_domain}</td>
