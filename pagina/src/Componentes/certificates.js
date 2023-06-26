@@ -17,21 +17,16 @@ class wallets extends React.Component {
     modalInsertar: false,
     tipoModal: "",
     form:{
-      id_pk: "",
-      wallet_fk: "",
+      wallet_fk : "",
       name: "",
-      file_name: "",
-      certificate: "",
-      download: "",
-      mime_type: "",
-      base_domain: "",
-      acl_description: "",
-      type_description: "",
-      description: ""
+      certificate: ""
     }
   }
 
   // Llama a la función para hacer la solicitud POST
+  modalInsertar=()=>{
+    this.setState({modalInsertar: !this.state.modalInsertar});
+  }
 
   getPetition = () => {
     axios.get(url).then(response => {
@@ -47,12 +42,9 @@ class wallets extends React.Component {
     this.setState({
       tipoModal: tipoModal,
       form: {
-        id_pk : domain.id_pk,
-        acl_description: domain.wallet_fk,
-        base_domain: domain.name,
-        description: domain.certificate,
-        type_description: domain.mime_type,
-        wallet_password: domain.file_name
+        wallet_fk : domain.wallet_fk,
+        name: domain.name,
+        certificate: domain.certificate
       }
     })
   }
@@ -73,8 +65,33 @@ class wallets extends React.Component {
     this.getPetition();
   }
 
-
-
+  peticionPost = async() => {
+    await fetch(url, {method: 'POST', headers: {
+      'Content-Type': 'application/json'
+    },
+  
+    body: JSON.stringify({
+      "WALLET_fk" : this.state.form.wallet_fk,
+      "NAME" : this.state.form.name,
+      "CERTIFICATE" : this.state.form.certificate
+    })}).then(response =>{
+      this.modalInsertar();
+      this.getPetition();
+    })
+  }
+  insertConfirm = () =>{
+    swal({
+      title: "Insert",
+      text: "Are you sure to insert this certificate?",
+      icon: "warning",
+      buttons: ["No","Yes"] 
+    }).then(respuesta => {
+      if(respuesta){
+        this.peticionPost();
+        swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});        
+      }
+    })
+  }
 render(){
   const {form} = this.state;
   
@@ -125,6 +142,63 @@ render(){
 
       </tbody>
       </table>
+      <Modal isOpen={this.state.modalInsertar}>
+          <ModalHeader style={{display: 'block'}}>
+          <button className="btn btn-light" style={{float: 'right'}} onClick={()=>this.modalInsertar()}>x</button> 
+          </ModalHeader>
+          <ModalBody>
+            <div className='form-group'>
+              {this.state.tipoModal === "delete"?
+              <div>
+              <label htmlFor="acl_description">ACL Description</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="acl_description" id="acl_description" onChange={this.handleChange} value={form?form.acl_description: ""}/>
+              <br />
+              <label htmlFor="base_domain">Domain</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="base_domain" id="base_domain" onChange={this.handleChange} value={form?form.base_domain: ""}/>
+              <br />
+              <label htmlFor="description">description</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="description" id="description" onChange={this.handleChange} value={form?form.description:""}/>
+              <br />
+              <label htmlFor="type_description">type_description</label>
+              <FormGroup>
+              <Input disabled className='form-select form-select-sm'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='select' name="type_description" id="type_description" onChange={this.handleChange} value={form?form.type_description:""}>
+              <option selected>Select a option</option>
+              <option value={'REST'}>REST</option>
+              <option value={'SOAP'}>SOAP</option>
+              </Input>
+              </FormGroup>
+              <br /> 
+              </div>
+              :
+              <div>
+              <label htmlFor="wallet_fk">ACL Description</label>
+              <input className='form-control' type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
+              <br />
+              <label htmlFor="name">Domain</label>
+              <input className='form-control' type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
+              <br />
+              <label htmlFor="certificate">description</label>
+              <input className='form-control' type='file' name="certificate" id="certificate" onChange={this.handleChange} value={form?form.certificate:""}/>
+              <br /> 
+              </div>
+              } 
+            </div>
+          </ModalBody>
+          <ModalFooter>
+          {this.state.tipoModal === "update"?
+            <button className='btn btn-primary' onClick={()=>this.updateConfirm()}>
+            update
+          </button> : this.state.tipoModal === "delete" ?
+          <button className='btn btn-warning' onClick={()=>this.deleteConfirm()}>
+          delete
+        </button> :
+            <button className='btn btn-success' onClick={()=>this.insertConfirm()}>
+              Insert
+            </button> 
+            }
+            <button className='btn btn-danger' onClick={()=>this.modalInsertar()}>cancelar</button>
+          </ModalFooter>
+      </Modal>
     </div>
     );
   }
