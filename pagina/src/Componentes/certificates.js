@@ -5,6 +5,7 @@ import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reac
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
 import swal from 'sweetalert'
+import { BiSolidPlusCircle } from "react-icons/bi";
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/certificados";
 
@@ -97,14 +98,11 @@ class certificates extends React.Component {
   };
 
   peticionDelete = async () => {
-    await fetch(url, {
+    const id = this.state.form.id_pk;
+    const deleteUrl = url+"?ID_PK="+id;
+
+    await fetch(deleteUrl, {
       method: 'DELETE',
-      headers: {
-        'Content-Type' : 'application/json'
-      },
-      body : JSON.stringify({
-        "ID_PK" : this.state.form.id_pk,
-      })
     }).then (response => {
         this.modalInsertar();
         this.getPetition();
@@ -150,7 +148,7 @@ render(){
   return(
     <div className='App'>
     <br />
-      <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>Agregar Certificates</button>
+      <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>< BiSolidPlusCircle /> Add Certificates</button>
       <br /> <br />
       <table className='table'>
       <thead>

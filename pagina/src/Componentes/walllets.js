@@ -10,7 +10,6 @@ const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios"
 const urlSD = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/DominiosSD";
 
 
-
 class wallets extends React.Component {
 
   state = {
@@ -199,7 +198,7 @@ render(){
   return(
     <div className='App'>
     <br />
-      <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>Agregar Dominios</button>
+      <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>Add Domain</button>
       <br /> <br />
       <table className='table'>
       <thead>
