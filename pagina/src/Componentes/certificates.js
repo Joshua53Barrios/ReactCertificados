@@ -10,7 +10,7 @@ const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/certifica
 
 
 
-class wallets extends React.Component {
+class certificates extends React.Component {
 
   state = {
     data: [] ,
@@ -19,7 +19,7 @@ class wallets extends React.Component {
     form:{
       wallet_fk : "",
       name: "",
-      certificate: ""
+      certificate: null
     }
   }
 
@@ -60,25 +60,57 @@ class wallets extends React.Component {
     console.log(this.state.form)
   }
 
+  handleFileChange = (event) => {
+    const file = event.target.files[0];
+    this.setState({
+      form: {
+        ...this.state.form,
+        certificate: file,
+      },
+    });
+  };
+  
 
   componentDidMount(){
     this.getPetition();
   }
 
-  peticionPost = async() => {
+  /*peticionPost = async() => {
     await fetch(url, {method: 'POST', headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'multipart/form-data'
     },
   
     body: JSON.stringify({
-      "WALLET_fk" : this.state.form.wallet_fk,
+      "WALLET_FK" : this.state.form.wallet_fk,
       "NAME" : this.state.form.name,
       "CERTIFICATE" : this.state.form.certificate
     })}).then(response =>{
       this.modalInsertar();
       this.getPetition();
     })
-  }
+  }*/
+
+  peticionPost1 = async () => {
+    const formData = new FormData();
+    formData.append("WALLET_FK", this.state.form.wallet_fk);
+    formData.append("NAME", this.state.form.name);
+    formData.append("CERTIFICATE", this.state.form.certificate);
+  
+    try {
+      await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      this.modalInsertar();
+      this.getPetition();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
   insertConfirm = () =>{
     swal({
       title: "Insert",
@@ -87,7 +119,7 @@ class wallets extends React.Component {
       buttons: ["No","Yes"] 
     }).then(respuesta => {
       if(respuesta){
-        this.peticionPost();
+        this.peticionPost1();
         swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});        
       }
     })
@@ -132,9 +164,9 @@ render(){
       <td>{domain.type_description}</td>
       <td>{domain.description}</td>
       <td>
-      <a href={domain.download} download={domain.download} className="btn btn-primary">
-      Download
-      </a>
+      <a href={domain.download} download={domain.download} className="btn btn-primary"> Download </a>
+      {"  "}
+      <button className='btn btn-danger' onClick={()=>{this.domainSelect(domain, "delete"); this.modalInsertar()}}><BiTrash /></button>
       </td>
     </tr>
   ))
@@ -150,35 +182,23 @@ render(){
             <div className='form-group'>
               {this.state.tipoModal === "delete"?
               <div>
-              <label htmlFor="acl_description">ACL Description</label>
-              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="acl_description" id="acl_description" onChange={this.handleChange} value={form?form.acl_description: ""}/>
+              <label htmlFor="wallet_fk">WALLET</label>
+              <input className='form-control' type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
               <br />
-              <label htmlFor="base_domain">Domain</label>
-              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="base_domain" id="base_domain" onChange={this.handleChange} value={form?form.base_domain: ""}/>
+              <label htmlFor="name">NAME</label>
+              <input className='form-control' type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
               <br />
-              <label htmlFor="description">description</label>
-              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="description" id="description" onChange={this.handleChange} value={form?form.description:""}/>
-              <br />
-              <label htmlFor="type_description">type_description</label>
-              <FormGroup>
-              <Input disabled className='form-select form-select-sm'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='select' name="type_description" id="type_description" onChange={this.handleChange} value={form?form.type_description:""}>
-              <option selected>Select a option</option>
-              <option value={'REST'}>REST</option>
-              <option value={'SOAP'}>SOAP</option>
-              </Input>
-              </FormGroup>
-              <br /> 
               </div>
               :
               <div>
-              <label htmlFor="wallet_fk">ACL Description</label>
+              <label htmlFor="wallet_fk">WALLET</label>
               <input className='form-control' type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
               <br />
-              <label htmlFor="name">Domain</label>
+              <label htmlFor="name">NAME</label>
               <input className='form-control' type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
               <br />
-              <label htmlFor="certificate">description</label>
-              <input className='form-control' type='file' name="certificate" id="certificate" onChange={this.handleChange} value={form?form.certificate:""}/>
+              <label htmlFor="certificate">CERTIFICATE</label>
+              <input className='form-control' type='file' name="certificate" id="certificate" onChange={this.handleFileChange} value={null}/>
               <br /> 
               </div>
               } 
@@ -204,4 +224,4 @@ render(){
   }
 }
 
-export default wallets;
+export default certificates;
