@@ -244,7 +244,7 @@ render(){
               <input className='form-control' type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
               <br />
               <label htmlFor="certificate">CERTIFICATE</label>
-              <input className='form-control' type='file' name="certificate" id="certificate" onChange={this.handleFileChange} value={null}/>
+              <input accept=".pem,.PEM,.crt,.CRT,.cer,.CER,.key,.KEY,.TXT,.txt" className='form-control' type='file' name="certificate" id="certificate" onChange={this.handleFileChange} value={null}/>
               <br /> 
               </div>
               } 
