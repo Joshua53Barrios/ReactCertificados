@@ -5,6 +5,7 @@ import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reac
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
 import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import './wallets.css'
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 const urlSD = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/DominiosSD";
@@ -31,25 +32,43 @@ class wallets extends React.Component {
   // Llama a la función para hacer la solicitud POST
   
   peticionPost = async() => {
-    await fetch(url, {method: 'POST', headers: {
-      'Content-Type': 'application/json'
-    },
-  
-    body: JSON.stringify({
-      "TYPE_DESCRIPTION" : this.state.form.type_description,
-      "ACL_DESCRIPTION" : this.state.form.acl_description,
-      "BASE_DOMAIN" : this.state.form.base_domain,
-      "WALLETH_PATH" : this.state.form.walleth_path,
-      "DESCRIPTION" : this.state.form.description,
-      "WALLET_PASSWORD" : this.state.form.wallet_password
-    })}).then(response =>{
-      this.modalInsertar();
-      this.getPetition();
-    })
+
+    const { form } = this.state
+
+    if (form && form.acl_description && form.base_domain && form.description && form.type_description && form.wallet_password && form.walleth_path) {
+      await fetch(url, {method: 'POST', headers: {
+        'Content-Type': 'application/json'
+      },
+    
+      body: JSON.stringify({
+        "TYPE_DESCRIPTION" : this.state.form.type_description,
+        "ACL_DESCRIPTION" : this.state.form.acl_description,
+        "BASE_DOMAIN" : this.state.form.base_domain,
+        "WALLETH_PATH" : this.state.form.walleth_path,
+        "DESCRIPTION" : this.state.form.description,
+        "WALLET_PASSWORD" : this.state.form.wallet_password
+      })}).then(response =>{
+        this.modalInsertar();
+        this.getPetition();
+      })
+      swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});  
+      return true;
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please Fill all fields',
+      });
+      return false;
+    }
+
+    
   }
 
 
   peticionPut = async() => {
+    const { form } = this.state
+    if (form && form.acl_description && form.base_domain && form.description && form.type_description && form.wallet_password && form.walleth_path){
     await fetch(url, {method: 'PUT', headers: {
       'Content-Type': 'application/json'
     },
@@ -64,7 +83,15 @@ class wallets extends React.Component {
     })}).then(response =>{
       this.modalInsertar();
       this.getPetition();
-    })
+    }) 
+    swal({text: "The certificate has been edited", icon: "success", timer:"2000"});   
+  } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please Fill all fields',
+      });
+    }
   }
 
   deleteConfirm = () =>{
@@ -89,8 +116,7 @@ class wallets extends React.Component {
       buttons: ["No","Yes"] 
     }).then(respuesta => {
       if(respuesta){
-        this.peticionPut();
-        swal({text: "The certificate has been edited", icon: "success", timer:"2000"});        
+       const result = this.peticionPut();     
       }
     })
   }
@@ -103,8 +129,7 @@ class wallets extends React.Component {
       buttons: ["No","Yes"] 
     }).then(respuesta => {
       if(respuesta){
-        this.peticionPost();
-        swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});        
+        const result = this.peticionPost();
       }
     })
   }
