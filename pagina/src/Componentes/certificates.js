@@ -5,6 +5,7 @@ import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reac
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
 import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { BiSolidPlusCircle } from "react-icons/bi";
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/certificados";
@@ -21,7 +22,7 @@ class certificates extends React.Component {
       id_pk: "",
       wallet_fk : "",
       name: "",
-      certificate: null
+      certificate: ""
     }
   }
 
@@ -60,6 +61,7 @@ class certificates extends React.Component {
         [e.target.name]: e.target.value
       }
     });
+
     console.log(this.state.form)
   }
 
@@ -71,6 +73,7 @@ class certificates extends React.Component {
         certificate: file,
       },
     });
+    console.log(file)
   };
   
   componentDidMount(){
@@ -78,24 +81,41 @@ class certificates extends React.Component {
   }
 
   peticionPost1 = async () => {
-    const formData = new FormData();
-    formData.append("WALLET_FK", this.state.form.wallet_fk);
-    formData.append("NAME", this.state.form.name);
-    formData.append("CERTIFICATE", this.state.form.certificate);
+    const { form } = this.state;
   
-    try {
-      await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    if (form && form.wallet_fk && form.name && form.certificate) {
+      const formData = new FormData();
+      formData.append("WALLET_FK", form.wallet_fk);
+      formData.append("NAME", form.name);
+      formData.append("CERTIFICATE", form.certificate);
+  
+      try {
+        await axios.post(url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        
+        this.modalInsertar();
+        this.getPetition();
+        swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});  
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please Fill all fields',
       });
-  
-      this.modalInsertar();
-      this.getPetition();
-    } catch (error) {
-      console.log(error);
+      return false;
     }
+
+    return true;
+
   };
+  
+  
 
   peticionDelete = async () => {
     const id = this.state.form.id_pk;
@@ -110,22 +130,20 @@ class certificates extends React.Component {
       console.log(error);
     })
   }
-  
 
-  insertConfirm = () =>{
-    swal({
-      title: "Insert",
-      text: "Are you sure to insert this certificate?",
-      icon: "warning",
-      buttons: ["No","Yes"] 
-    }).then(respuesta => {
-      if(respuesta){
-        this.peticionPost1();
-        swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});        
-      }
-    })
+
+  insertConfirm = async() =>{
+      swal({
+        title: "Insert",
+        text: "Are you sure to insert this certificate?",
+        icon: "warning",
+        buttons: ["No","Yes"] 
+      }).then(respuesta => {
+        if(respuesta){
+          const result = this.peticionPost1();     
+        }
+      }) 
   }
-
 
   deleteConfirm = () =>{
     swal({
@@ -140,7 +158,6 @@ class certificates extends React.Component {
       }
     })
   }
-
 
 render(){
   const {form} = this.state;
@@ -182,7 +199,7 @@ render(){
       <td>{domain.type_description}</td>
       <td>{domain.description}</td>
       <td>
-      <a href={domain.download} download={domain.download} className="btn btn-primary"> Download </a>
+      <button onClick={()=>{this.domainSelect(domain, "download"); this.modalInsertar()}} className="btn btn-primary" > Download </button>
       {"  "}
       <button className='btn btn-danger' onClick={()=>{this.domainSelect(domain, "delete"); this.modalInsertar()}}><BiTrash /></button>
       </td>
@@ -191,7 +208,7 @@ render(){
 }
       </tbody>
       </table>
-
+      <form id='myform'>
       <Modal isOpen={this.state.modalInsertar}>
           <ModalHeader style={{display: 'block'}}>
           <button className="btn btn-light" style={{float: 'right'}} onClick={()=>this.modalInsertar()}>x</button> 
@@ -205,6 +222,18 @@ render(){
               <br />
               <label htmlFor="name">NAME</label>
               <input className='form-control' readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
+              </div>
+              : this.state.tipoModal === "download" ?
+              <div>
+              <label htmlFor="wallet_fk">WALLET</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
+              <br />
+              <label htmlFor="name">NAME</label>
+              <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
+              <br />
+              <label htmlFor="certificate">CERTIFICATE</label>
+              <input  disabled className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="certificate" id="certificate" onChange={this.handleFileChange} value={null}/>
+              <br /> 
               </div>
               :
               <div>
@@ -222,20 +251,21 @@ render(){
             </div>
           </ModalBody>
           <ModalFooter>
-          {this.state.tipoModal === "update"?
+          {this.state.tipoModal === "download"?
             <button className='btn btn-primary' onClick={()=>this.updateConfirm()}>
-            update
+            download
           </button> : this.state.tipoModal === "delete" ?
           <button className='btn btn-warning' onClick={()=>this.deleteConfirm()}>
           delete
         </button> :
-            <button className='btn btn-success' onClick={()=>this.insertConfirm()}>
+            <button className='btn btn-success' onClick={()=>{this.insertConfirm();}}>
               Insert
             </button> 
             }
             <button className='btn btn-danger' onClick={()=>this.modalInsertar()}>cancelar</button>
           </ModalFooter>
       </Modal>
+      </form>
     </div>
     );
   }
