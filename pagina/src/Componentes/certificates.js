@@ -17,6 +17,7 @@ class certificates extends React.Component {
     modalInsertar: false,
     tipoModal: "",
     form:{
+      id_pk: "",
       wallet_fk : "",
       name: "",
       certificate: null
@@ -42,6 +43,7 @@ class certificates extends React.Component {
     this.setState({
       tipoModal: tipoModal,
       form: {
+        id_pk: domain.id_pk,
         wallet_fk : domain.wallet_fk,
         name: domain.name,
         certificate: domain.certificate
@@ -70,25 +72,9 @@ class certificates extends React.Component {
     });
   };
   
-
   componentDidMount(){
     this.getPetition();
   }
-
-  /*peticionPost = async() => {
-    await fetch(url, {method: 'POST', headers: {
-      'Content-Type': 'multipart/form-data'
-    },
-  
-    body: JSON.stringify({
-      "WALLET_FK" : this.state.form.wallet_fk,
-      "NAME" : this.state.form.name,
-      "CERTIFICATE" : this.state.form.certificate
-    })}).then(response =>{
-      this.modalInsertar();
-      this.getPetition();
-    })
-  }*/
 
   peticionPost1 = async () => {
     const formData = new FormData();
@@ -109,6 +95,23 @@ class certificates extends React.Component {
       console.log(error);
     }
   };
+
+  peticionDelete = async () => {
+    await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify({
+        "ID_PK" : this.state.form.id_pk,
+      })
+    }).then (response => {
+        this.modalInsertar();
+        this.getPetition();
+    }).catch(error => {
+      console.log(error);
+    })
+  }
   
 
   insertConfirm = () =>{
@@ -124,6 +127,23 @@ class certificates extends React.Component {
       }
     })
   }
+
+
+  deleteConfirm = () =>{
+    swal({
+      title: "Delete",
+      text: "Are you sure to delete this certificate?",
+      icon: "warning",
+      buttons: ["No","Yes"] 
+    }).then(respuesta => {
+      if(respuesta){
+        this.peticionDelete();
+        swal({text: "The certificate has been deleted", icon: "success", timer:"2000"});        
+      }
+    })
+  }
+
+
 render(){
   const {form} = this.state;
   
@@ -136,12 +156,12 @@ render(){
       <thead>
         <tr>
           <th style={{display:'none'}}>id_pk</th>
-          <th>wallet_fk</th>
+          <th style={{display: 'none'}} >wallet_fk</th>
           <th>name</th>
           <th>file_name</th>
-          <th>certificate</th>
-          <th>download</th>
-          <th>mime_type</th>
+          <th style={{display: 'none'}} >certificate</th>
+          <th style={{display: 'none'}} >download</th>
+          <th style={{display: 'none'}} >mime_type</th>
           <th>base_domain</th>
           <th>acl_description</th>
           <th>type_description</th>
@@ -153,12 +173,12 @@ render(){
       this.state.data.map(domain => (
     <tr key={domain.id_pk}>
       <td style={{display: 'none'}}>{domain.id_pk}</td>
-      <td>{domain.wallet_fk}</td>
+      <td style={{display: 'none'}}>{domain.wallet_fk}</td>
       <td>{domain.name}</td>
       <td>{domain.file_name}</td>
-      <td>{domain.certificate}</td>
-      <td>{domain.download}</td>
-      <td>{domain.mime_type}</td>
+      <td style={{display: 'none'}}>{domain.certificate}</td>
+      <td style={{display: 'none'}}>{domain.download}</td>
+      <td style={{display: 'none'}}>{domain.mime_type}</td>
       <td>{domain.base_domain}</td>
       <td>{domain.acl_description}</td>
       <td>{domain.type_description}</td>
@@ -171,9 +191,9 @@ render(){
     </tr>
   ))
 }
-
       </tbody>
       </table>
+
       <Modal isOpen={this.state.modalInsertar}>
           <ModalHeader style={{display: 'block'}}>
           <button className="btn btn-light" style={{float: 'right'}} onClick={()=>this.modalInsertar()}>x</button> 
@@ -183,11 +203,10 @@ render(){
               {this.state.tipoModal === "delete"?
               <div>
               <label htmlFor="wallet_fk">WALLET</label>
-              <input className='form-control' type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
+              <input className='form-control' readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
               <br />
               <label htmlFor="name">NAME</label>
-              <input className='form-control' type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
-              <br />
+              <input className='form-control' readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
               </div>
               :
               <div>
