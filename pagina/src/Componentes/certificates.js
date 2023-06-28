@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import {useState, useEffect} from 'react'
 import "bootstrap/dist/css/bootstrap.min.css"
 import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reactstrap';
 import { BiPencil } from "react-icons/bi"
@@ -9,6 +10,7 @@ import Swal from 'sweetalert2'
 import { BiSolidPlusCircle } from "react-icons/bi";
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/certificados";
+const urlDomain = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 
 
 
@@ -23,7 +25,9 @@ class certificates extends React.Component {
       wallet_fk : "",
       name: "",
       certificate: ""
-    }
+    },
+    options: [],
+    selectedOption: ""
   }
 
   // Llama a la función para hacer la solicitud POST
@@ -78,14 +82,28 @@ class certificates extends React.Component {
   
   componentDidMount(){
     this.getPetition();
+
+    axios.get(urlDomain).then(response=>{
+      console.log('API DE DOMINIOS', response);
+      this.setState({options: response.data.items})
+      console.log('array de estado con la api', this.state.options)
+    }).catch(error=>{
+      console.log(error)
+    })
+  };
+
+  handleSelectChange = (event) => {
+    this.setState({ selectedOption: event.target.value});
+    console.log(event.target.value);
   }
 
   peticionPost1 = async () => {
     const { form } = this.state;
+    const { selectedOption } = this.state;
   
-    if (form && form.wallet_fk && form.name && form.certificate) {
+    if (form && selectedOption && form.name && form.certificate) {
       const formData = new FormData();
-      formData.append("WALLET_FK", form.wallet_fk);
+      formData.append("WALLET_FK", selectedOption);
       formData.append("NAME", form.name);
       formData.append("CERTIFICATE", form.certificate);
   
@@ -115,8 +133,6 @@ class certificates extends React.Component {
 
   };
   
-  
-
   peticionDelete = async () => {
     const id = this.state.form.id_pk;
     const deleteUrl = url+"?ID_PK="+id;
@@ -159,8 +175,14 @@ class certificates extends React.Component {
     })
   }
 
+  handleChangeWallet = ()=>{
+
+  }
+
+
 render(){
   const {form} = this.state;
+  const { options, selectedOption } = this.state
   
   return(
     <div className='App'>
@@ -215,15 +237,7 @@ render(){
           </ModalHeader>
           <ModalBody>
             <div className='form-group'>
-              {this.state.tipoModal === "delete"?
-              <div>
-              <label htmlFor="wallet_fk">WALLET</label>
-              <input className='form-control' readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
-              <br />
-              <label htmlFor="name">NAME</label>
-              <input className='form-control' readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
-              </div>
-              : this.state.tipoModal === "download" ?
+              { this.state.tipoModal === "download" || this.state.tipoModal === "delete" ?
               <div>
               <label htmlFor="wallet_fk">WALLET</label>
               <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
@@ -238,7 +252,13 @@ render(){
               :
               <div>
               <label htmlFor="wallet_fk">WALLET</label>
-              <input className='form-control' type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
+              <select className='form-control' name="wallet_fk" id="wallet_fk" onChange={this.handleSelectChange} value={selectedOption?options.id_pk:""} >
+                <option value="">Select a WALLET</option>
+                {options.map((option) => (
+                  <option key={option.id_pk} value={option.id_pk}>{option.base_domain}
+                  </option>
+                ))}
+              </ select>
               <br />
               <label htmlFor="name">NAME</label>
               <input className='form-control' type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
