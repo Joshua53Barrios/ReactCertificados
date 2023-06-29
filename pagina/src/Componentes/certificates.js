@@ -107,17 +107,17 @@ class certificates extends React.Component {
   
     if (form && selectedOption && form.name && form.certificate) {
       const formData = new FormData();
-      formData.append("WALLET_FK", selectedOption);
-      formData.append("NAME", form.name);
+      //formData.append("WALLET_FK", selectedOption);
+      //formData.append("NAME", form.name);
       formData.append("CERTIFICATE", form.certificate);
-      formData.append("FILE_NAME", form.file_name);  
+      //formData.append("FILE_NAME", form.file_name);  
 
-      console.log("El valor de filename antes de enviar la api es:", form.file_name)
+      console.log("El valor de certificado antes de enviar la api es:", form.certificate)
       try {
-        await axios.post(url, formData, {
+        await axios.post(`${url}?NAME=${form.name}&FILE_NAME=${form.file_name}&WALLET_FK=${selectedOption}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
-          },
+          }
         });        
         this.modalInsertar();
         this.getPetition();
