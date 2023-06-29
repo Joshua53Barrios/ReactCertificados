@@ -174,14 +174,11 @@ class certificates extends React.Component {
     })
   }
 
-  handleChangeWallet = ()=>{
-
-  }
-  descargarArchivo = (file_name) => {
+  descargarArchivo = (id_pk,file_name) => {
     axios({
-      url: 'https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/CertificadosDW?ID_PK=181', //your url
+      url: 'https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/CertificadosDW?ID_PK='+id_pk, //your url
       method: 'GET',
-      responseType: 'blob', // important
+      responseType: 'blob' // important
   }).then((response) => {
       // create file link in browser's memory
       console.log(response)
@@ -241,7 +238,7 @@ render(){
       <td>{domain.type_description}</td>
       <td>{domain.description}</td>
       <td>
-      <button onClick={()=>{this.descargarArchivo(domain.file_name)}} className="btn btn-primary" > Download </button>
+      <button onClick={()=>{this.descargarArchivo(domain.id_pk, domain.file_name)}} className="btn btn-primary" > Download </button>
       {"  "}
       <button className='btn btn-danger' onClick={()=>{this.domainSelect(domain, "delete"); this.modalInsertar()}}><BiTrash /></button>
       </td>
@@ -257,7 +254,7 @@ render(){
           </ModalHeader>
           <ModalBody>
             <div className='form-group'>
-              { this.state.tipoModal === "download" || this.state.tipoModal === "delete" ?
+              { this.state.tipoModal === "delete" ?
               <div>
               <label htmlFor="wallet_fk">WALLET</label>
               <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="wallet_fk" id="wallet_fk" onChange={this.handleChange} value={form?form.wallet_fk: ""}/>
@@ -265,9 +262,6 @@ render(){
               <label htmlFor="name">NAME</label>
               <input className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="name" id="name" onChange={this.handleChange} value={form?form.name: ""}/>
               <br />
-              <label htmlFor="certificate">CERTIFICATE</label>
-              <input  disabled className='form-control'  readOnly style={{backgroundColor: '#f2f2f2', color:'#888888'}} type='text' name="certificate" id="certificate" onChange={this.handleFileChange} value={null}/>
-              <br /> 
               </div>
               :
               <div>
