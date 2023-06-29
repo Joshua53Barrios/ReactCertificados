@@ -9,7 +9,7 @@ import Swal from 'sweetalert2'
 import './wallets.css'
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
 const urlSD = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/DominiosSD";
-
+const urldw = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/CertificadosDW?ID_PK=181"
 
 class wallets extends React.Component {
 
@@ -215,7 +215,15 @@ class wallets extends React.Component {
     this.getPetition();
   }
 
-
+  descargarArchivo = () => {
+    axios
+    .get(urldw, {
+      responseType: "json",
+    })
+    .then(function (response) {
+      console.log(response.data.items);
+    });
+  }
 
 render(){
   const {form} = this.state;

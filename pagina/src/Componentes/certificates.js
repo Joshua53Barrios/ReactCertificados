@@ -11,8 +11,7 @@ import { BiSolidPlusCircle } from "react-icons/bi";
 
 const url = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/certificados";
 const urlDomain = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/Dominios";
-
-
+const urldw = "https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/CertificadosDW";
 
 class certificates extends React.Component {
 
@@ -178,7 +177,28 @@ class certificates extends React.Component {
   handleChangeWallet = ()=>{
 
   }
-
+  descargarArchivo = (file_name) => {
+    axios({
+      url: 'https://apex.oracle.com/pls/apex/jy_apex/ApexCertificates/CertificadosDW?ID_PK=181', //your url
+      method: 'GET',
+      responseType: 'blob', // important
+  }).then((response) => {
+      // create file link in browser's memory
+      console.log(response)
+      const href = URL.createObjectURL(response.data);
+  
+      // create "a" HTML element with href to file & click
+      const link = document.createElement('a');
+      link.href = href;
+      link.setAttribute('download', file_name); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+  
+      // clean up "a" element & remove ObjectURL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+  });
+  }
 
 render(){
   const {form} = this.state;
@@ -221,7 +241,7 @@ render(){
       <td>{domain.type_description}</td>
       <td>{domain.description}</td>
       <td>
-      <button onClick={()=>{this.domainSelect(domain, "download"); this.modalInsertar()}} className="btn btn-primary" > Download </button>
+      <button onClick={()=>{this.descargarArchivo(domain.file_name)}} className="btn btn-primary" > Download </button>
       {"  "}
       <button className='btn btn-danger' onClick={()=>{this.domainSelect(domain, "delete"); this.modalInsertar()}}><BiTrash /></button>
       </td>
