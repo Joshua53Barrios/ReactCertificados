@@ -23,7 +23,8 @@ class certificates extends React.Component {
       id_pk: "",
       wallet_fk : "",
       name: "",
-      certificate: ""
+      certificate: "",
+      file_name: ""
     },
     options: [],
     selectedOption: ""
@@ -70,13 +71,17 @@ class certificates extends React.Component {
 
   handleFileChange = (event) => {
     const file = event.target.files[0];
+    const fileName = file.name;
+
     this.setState({
       form: {
         ...this.state.form,
         certificate: file,
-      },
+        file_name: fileName
+      }
     });
     console.log(file)
+    console.log(fileName)
   };
   
   componentDidMount(){
@@ -105,18 +110,20 @@ class certificates extends React.Component {
       formData.append("WALLET_FK", selectedOption);
       formData.append("NAME", form.name);
       formData.append("CERTIFICATE", form.certificate);
-  
+      formData.append("FILE_NAME", form.file_name);  
+
+      console.log("El valor de filename antes de enviar la api es:", form.file_name)
       try {
         await axios.post(url, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        });
-        
+        });        
         this.modalInsertar();
         this.getPetition();
         swal({text: "The certificate has been inserted", icon: "success", timer:"2000"});  
       } catch (error) {
+        console.log('el file name si da error es:',form.file_name)
         console.log(error);
       }
     } else {
@@ -127,9 +134,7 @@ class certificates extends React.Component {
       });
       return false;
     }
-
     return true;
-
   };
   
   peticionDelete = async () => {
