@@ -235,7 +235,7 @@ render(){
     <br />
       <div id='breadcrumb'>
       <h1>Wallets</h1>
-      <button className='btn btn-success' style={{width:'160px', height:'50px' }} onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}><BiSolidPlusCircle/> Add Domain</button>
+      <button className='btn btn-success' style={{width:'80px', height:'50px' }} onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}> Add <BiSolidPlusCircle/></button>
       </div>
       <br /> <br />
       <table className='table'>
@@ -244,8 +244,8 @@ render(){
           <th style={{display:'none'}}>id_pk</th>
           <th>ACL</th>
           <th>Base Domain</th>
-          <th>description</th>
-          <th>published</th>
+          <th>Description</th>
+          <th>Published</th>
           <th>Type</th>
           <th>Password</th>
           <th>Path</th>
@@ -260,7 +260,7 @@ render(){
       <td>{domain.acl_description}</td>
       <td>{domain.base_domain}</td>
       <td>{domain.description}</td>
-      <td>{domain.published}</td>
+      <td>{domain.published === 'Y' ? 'Yes' : 'No'}</td>
       <td>{domain.type_description}</td>
       <td>{domain.wallet_password}</td>
       <td>{domain.walleth_path}</td>
