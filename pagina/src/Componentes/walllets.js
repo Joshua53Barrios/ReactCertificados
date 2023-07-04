@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import {FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reactstrap';
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
+import { BiSolidPlusCircle } from "react-icons/bi";
+
 import swal from 'sweetalert'
 import Swal from 'sweetalert2'
 import './wallets.css'
@@ -231,19 +233,20 @@ render(){
   return(
     <div className='App'>
     <br />
-      <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>Add Domain</button>
+      <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}><BiSolidPlusCircle/> Add Domain</button>
       <br /> <br />
       <table className='table'>
       <thead>
         <tr>
           <th style={{display:'none'}}>id_pk</th>
-          <th>acl_description</th>
-          <th>base_domain</th>
+          <th>ACL</th>
+          <th>Base Domain</th>
           <th>description</th>
           <th>published</th>
-          <th>type_description</th>
-          <th>wallet_password</th>
-          <th>walleth_path</th>
+          <th>Type</th>
+          <th>Password</th>
+          <th>Path</th>
+          <th> </th>
         </tr>
       </thead>
       <tbody>

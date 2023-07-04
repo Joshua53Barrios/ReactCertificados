@@ -217,14 +217,15 @@ render(){
           <th style={{display:'none'}}>id_pk</th>
           <th style={{display: 'none'}} >wallet_fk</th>
           <th>name</th>
-          <th>file_name</th>
+          <th>File</th>
           <th style={{display: 'none'}} >certificate</th>
           <th style={{display: 'none'}} >download</th>
           <th style={{display: 'none'}} >mime_type</th>
-          <th>base_domain</th>
-          <th>acl_description</th>
-          <th>type_description</th>
-          <th>description</th>
+          <th>Domain</th>
+          <th>ACL</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th> </th>
         </tr>
       </thead>
       <tbody>
