@@ -347,16 +347,18 @@ render(){
           <ModalFooter>
             {this.state.tipoModal === "update"?
             <button className='btn btn-primary' onClick={()=>this.updateConfirm()}>
-            update
+            Update
           </button> : this.state.tipoModal === "delete" ?
           <button className='btn btn-warning' onClick={()=>this.deleteConfirm()}>
-          delete
+          Delete
         </button> :
             <button className='btn btn-success' onClick={()=>this.insertConfirm()}>
               Insert
             </button> 
             }
-            <button className='btn btn-danger' onClick={()=>this.modalInsertar()}>cancelar</button>
+            <button className='btn btn-danger' onClick={()=>this.modalInsertar()}>
+              Cancel
+            </button>
           </ModalFooter>
       </Modal>
 
