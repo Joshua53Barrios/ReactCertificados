@@ -20,3 +20,11 @@
   background-color: #f9f9f9;
 }
 
+#breadcrumb{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+

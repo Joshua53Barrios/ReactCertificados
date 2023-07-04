@@ -209,14 +209,17 @@ render(){
   return(
     <div className='App'>
     <br />
+      <div id='breadcrumb'>
+      <h1>Certificates</h1>
       <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}>< BiSolidPlusCircle /> Add Certificates</button>
+      </div>
       <br /> <br />
       <table className='table'>
       <thead>
         <tr>
           <th style={{display:'none'}}>id_pk</th>
           <th style={{display: 'none'}} >wallet_fk</th>
-          <th>name</th>
+          <th>Name</th>
           <th>File</th>
           <th style={{display: 'none'}} >certificate</th>
           <th style={{display: 'none'}} >download</th>

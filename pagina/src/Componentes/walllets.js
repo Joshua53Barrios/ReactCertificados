@@ -233,7 +233,10 @@ render(){
   return(
     <div className='App'>
     <br />
-      <button className='btn btn-success' onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}><BiSolidPlusCircle/> Add Domain</button>
+      <div id='breadcrumb'>
+      <h1>Wallets</h1>
+      <button className='btn btn-success' style={{width:'150px', height:'50px' }} onClick={()=>{this.setState({form: null, tipoModal: 'insert'}); this.modalInsertar()}}><BiSolidPlusCircle/> Add Domain</button>
+      </div>
       <br /> <br />
       <table className='table'>
       <thead>
